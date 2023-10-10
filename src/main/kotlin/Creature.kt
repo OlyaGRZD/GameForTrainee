@@ -1,5 +1,7 @@
+import kotlin.math.max
 import kotlin.random.Random
 import kotlin.random.nextInt
+import kotlin.system.exitProcess
 
 open class Creature(
     val name: String,
@@ -20,8 +22,8 @@ open class Creature(
     }
 
     // Метод атаки на противника
-    open fun takeDamage(target: Creature){
-        val attackModifier = attack - target.defense + 1
+    open fun Damage(target: Creature){
+        val attackModifier = max(attack - target.defense + 1,1)
         val success = attackModifier > 0 && (1..attackModifier)
             .any { Random.nextInt(1, 7) in listOf(5, 6) }
         if(success){
@@ -36,8 +38,11 @@ open class Creature(
     // Метод получения урона
     open fun takeDamage(damage: Int) {
         health -= damage
-        if (health <= 0) {
-            println("$name умирает.")
+        if (health > 0) {
+            println("Теперь у $name $health единиц здоровья.\n")
+        } else{
+            println("Увы, $name умер:(\nКонец игры!")
+            exitProcess(-1)
         }
     }
 
@@ -47,6 +52,7 @@ open class Creature(
             val healAmount = (maxHeal * 0.3).toInt()
             println("$name исцеляется на $healAmount единиц здоровья.")
             health += healAmount
+            println("Теперь у $name $health единиц здоровья.")
         } else {
             println("$name уже мертв и не может быть исцелен.")
         }
